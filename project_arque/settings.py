@@ -92,6 +92,7 @@ CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOWED_ORIGINS = [
     'https://clinicaarquepsi.com.br',
+    'https://www.clinicaarquepsi.com.br',
 ]
 
 CORS_URLS_REGEX = r'^/api/.*$'
