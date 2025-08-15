@@ -84,7 +84,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -95,7 +95,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://www.clinicaarquepsi.com.br',
 ]
 
-CORS_URLS_REGEX = r'^/api/.*$'
+#CORS_URLS_REGEX = r'^/api/.*$'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
