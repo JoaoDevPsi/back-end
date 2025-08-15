@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-3-6yj3j$8)wiamuwd-f^2wjk0i&v0+6o3p8!pzlam98i7#a=8^'
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'api.clinicaarquepsi.com.br', 'joaodevpsi.pythonanywhere.com']
 
