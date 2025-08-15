@@ -97,7 +97,7 @@ CORS_ALLOWED_ORIGINS = [
 
 #CORS_URLS_REGEX = r'^/api/.*$'
 
-MEDIA_URL = '/media/'
+MEDIA_URL = '/home/JoaoDevPsi/back-end/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 REST_FRAMEWORK = {
