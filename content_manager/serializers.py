@@ -4,29 +4,38 @@ from .models import Article, GalleryPost, GalleryImage
 from contact_form.models import ContactSubmission
 
 class GalleryImageSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(use_url=True, required=False, allow_null=True)
+    image_url = serializers.SerializerMethodField()
+
+    def get_image_url(self, obj):
+        if obj.image:
+            return self.context['request'].build_absolute_uri(obj.image.url)
+        return None
 
     class Meta:
         model = GalleryImage
-        fields = ['id', 'image', 'alt_text', 'link', 'order']
+        fields = ['id', 'image_url', 'alt_text', 'link', 'order']
         read_only_fields = ['id']
 
 class GalleryPostSerializer(serializers.ModelSerializer):
     images = GalleryImageSerializer(many=True, required=False)
+    image_main_url = serializers.SerializerMethodField()
+
+    def get_image_main_url(self, obj):
+        if obj.image_main:
+            return self.context['request'].build_absolute_uri(obj.image_main.url)
+        return None
 
     class Meta:
         model = GalleryPost
-        fields = ['id', 'post_type', 'link', 'image_main', 'images', 'created_at', 'updated_at']
+        fields = ['id', 'post_type', 'link', 'image_main_url', 'images', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
 
     def create(self, validated_data):
-        validated_data.pop('images', None) 
-        
         images_meta_str = self.context['request'].data.get('images_meta', '[]')
         images_meta = json.loads(images_meta_str) if isinstance(images_meta_str, str) else images_meta_str
         
         image_main_file = self.context['request'].FILES.get('image_main')
-        image_main_url = validated_data.get('image_main') 
+        image_main_url = self.context['request'].data.get('image_main')
 
         gallery_post = GalleryPost.objects.create(
             post_type=validated_data['post_type'],
@@ -58,9 +67,9 @@ class GalleryPostSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.post_type = validated_data.get('post_type', instance.post_type)
         instance.link = validated_data.get('link', instance.link)
-
+        
         new_image_file = self.context['request'].FILES.get('image_main')
-        new_image_url = validated_data.get('image_main') 
+        new_image_url = validated_data.get('image_main')
 
         if new_image_file:
             instance.image_main = new_image_file
@@ -71,11 +80,8 @@ class GalleryPostSerializer(serializers.ModelSerializer):
 
         instance.save()
         
-        validated_data.pop('images', None)
-
         if instance.post_type == 'carousel':
             instance.images.all().delete()
-
             images_meta_str = self.context['request'].data.get('images_meta', '[]')
             images_meta = json.loads(images_meta_str) if isinstance(images_meta_str, str) else images_meta_str
             
@@ -101,9 +107,16 @@ class GalleryPostSerializer(serializers.ModelSerializer):
 
 
 class ArticleSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
+    def get_image_url(self, obj):
+        if obj.image:
+            return self.context['request'].build_absolute_uri(obj.image.url)
+        return None
+
     class Meta:
         model = Article
-        fields = ['id', 'title', 'excerpt', 'content', 'image', 'created_at', 'updated_at']
+        fields = ['id', 'title', 'excerpt', 'content', 'image_url', 'created_at', 'updated_at']
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
@@ -122,9 +135,3 @@ class ArticleSerializer(serializers.ModelSerializer):
         
         instance.save()
         return instance
-
-class ContactSubmissionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ContactSubmission
-        fields = ['id', 'name', 'email', 'phone', 'message', 'submitted_at']
-        read_only_fields = ['id', 'submitted_at']
