@@ -135,3 +135,10 @@ class ArticleSerializer(serializers.ModelSerializer):
         
         instance.save()
         return instance
+
+
+class ContactSubmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactSubmission
+        fields = ['id', 'name', 'email', 'phone', 'message', 'submitted_at']
+        read_only_fields = ['id', 'submitted_at']
