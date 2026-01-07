@@ -6,7 +6,9 @@ from .serializers import ContactSubmissionSerializer
 from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework.permissions import AllowAny
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import VideoConteudo
 
 class ContactSubmissionCreateView(generics.CreateAPIView):
     queryset = ContactSubmission.objects.all()
@@ -41,3 +43,15 @@ class ContactSubmissionCreateView(generics.CreateAPIView):
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+@csrf_exempt
+def api_upload_video(request):
+    if request.method == 'POST':
+        video_file = request.FILES.get('video') 
+        titulo = request.POST.get('titulo', 'Vídeo sem título')
+
+        if video_file:
+            novo_video = VideoConteudo.objects.create(titulo=titulo, video_file=video_file)
+            return JsonResponse({'status': 'sucesso', 'url': novo_video.video_file.url})
+        
+        return JsonResponse({'status': 'erro', 'message': 'Nenhum arquivo enviado'}, status=400)

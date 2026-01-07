@@ -9,6 +9,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from contact_form.views import api_upload_video
 
 router = DefaultRouter()
 router.register(r'articles', ArticleViewSet)
@@ -21,6 +22,7 @@ urlpatterns = [
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/upload-video/', api_upload_video),
 ]
 
 urlpatterns += [
