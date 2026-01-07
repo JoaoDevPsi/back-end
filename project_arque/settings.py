@@ -22,6 +22,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'content_manager',
     'contact_form',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +55,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'project_arque.wsgi.application'
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.VideoMediaCloudinaryStorage'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dkhjbgmps',
+    'API_KEY': '681922999819251',
+    'API_SECRET': 'teeS67FvAVhRz_4easCOMAz4QEM'
+}
 
 DATABASES = {
     'default': {

@@ -14,3 +14,8 @@ class ContactSubmission(models.Model):
         ordering = ['-submitted_at']
         verbose_name = "Contato Recebido"
         verbose_name_plural = "Contatos Recebidos"
+
+class VideoConteudo(models.Model):
+    titulo = models.CharField(max_length=100)
+    video_file = models.FileField(upload_to='videos/')
+    criado_em = models.DateTimeField(auto_now_add=True)
