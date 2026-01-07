@@ -9,6 +9,7 @@ from rest_framework.permissions import AllowAny
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+# View para o formulário de contato (Antiga)
 class ContactSubmissionCreateView(generics.CreateAPIView):
     queryset = ContactSubmission.objects.all()
     serializer_class = ContactSubmissionSerializer
@@ -29,6 +30,7 @@ class ContactSubmissionCreateView(generics.CreateAPIView):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+# Função para o Upload de Vídeo (Nova)
 @csrf_exempt
 def api_upload_video(request):
     if request.method == 'POST':
@@ -40,7 +42,8 @@ def api_upload_video(request):
                 novo = VideoConteudo.objects.create(titulo=titulo, video_file=video)
                 return JsonResponse({'status': 'sucesso', 'url': novo.video_file.url}, status=201)
             
-            return JsonResponse({'status': 'erro', 'message': 'Arquivo não enviado'}, status=400)
+            return JsonResponse({'status': 'erro', 'message': 'Nenhum arquivo enviado'}, status=400)
         except Exception as e:
             return JsonResponse({'status': 'erro', 'message': str(e)}, status=500)
-    return JsonResponse({'status': 'erro', 'message': 'Método inválido'}, status=405)
+    
+    return JsonResponse({'status': 'erro', 'message': 'Metodo nao permitido'}, status=405)
