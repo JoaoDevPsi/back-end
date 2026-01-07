@@ -1,14 +1,13 @@
 from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .models import ContactSubmission
+from .models import ContactSubmission, VideoConteudo
 from .serializers import ContactSubmissionSerializer
 from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework.permissions import AllowAny
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import VideoConteudo
 
 class ContactSubmissionCreateView(generics.CreateAPIView):
     queryset = ContactSubmission.objects.all()
@@ -18,40 +17,34 @@ class ContactSubmissionCreateView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        contact_submission_instance = serializer.save()
-
-        contact_data = serializer.data
+        instance = serializer.save()
         
-        subject = f"Nova Solicitação de Contato: {contact_data['name']}"
+        subject = f"Nova Solicitação de Contato: {instance.name}"
         message_body = (
-            f"Nome Completo: {contact_data['name']}\n"
-            f"Email: {contact_data['email']}\n"
-            f"Telefone: {contact_data.get('phone', 'Não informado')}\n"
-            f"Mensagem: {contact_data.get('message', 'Nenhuma mensagem adicional')}\n"
-            f"Enviado em: {contact_submission_instance.submitted_at.strftime('%Y-%m-%d %H:%M:%S')}"
+            f"Nome: {instance.name}\nEmail: {instance.email}\n"
+            f"Telefone: {instance.phone}\nMensagem: {instance.message}"
         )
         
-        from_email = settings.DEFAULT_FROM_EMAIL
-        recipient_list = ['clinicaarque.psi@gmail.com']
-
         try:
-            send_mail(subject, message_body, from_email, recipient_list, fail_silently=False)
-            print(f"E-mail enviado com sucesso para {recipient_list}")
+            send_mail(subject, message_body, settings.DEFAULT_FROM_EMAIL, ['clinicaarque.psi@gmail.com'])
         except Exception as e:
-            print(f"ERRO ao enviar e-mail: {e}")
+            print(f"Erro e-mail: {e}")
 
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-    
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 @csrf_exempt
 def api_upload_video(request):
     if request.method == 'POST':
-        video_file = request.FILES.get('video') 
-        titulo = request.POST.get('titulo', 'Vídeo sem título')
+        try:
+            # O JS envia 'video_file', garantimos que o Django pegue o nome correto
+            video = request.FILES.get('video_file') or request.FILES.get('video')
+            titulo = request.POST.get('titulo', 'Vídeo sem título')
 
-        if video_file:
-            novo_video = VideoConteudo.objects.create(titulo=titulo, video_file=video_file)
-            return JsonResponse({'status': 'sucesso', 'url': novo_video.video_file.url})
-        
-        return JsonResponse({'status': 'erro', 'message': 'Nenhum arquivo enviado'}, status=400)
+            if video:
+                novo = VideoConteudo.objects.create(titulo=titulo, video_file=video)
+                return JsonResponse({'status': 'sucesso', 'url': novo.video_file.url}, status=201)
+            
+            return JsonResponse({'status': 'erro', 'message': 'Arquivo não enviado'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'erro', 'message': str(e)}, status=500)
+    return JsonResponse({'status': 'erro', 'message': 'Método inválido'}, status=405)
