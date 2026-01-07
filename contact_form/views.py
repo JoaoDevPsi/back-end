@@ -30,20 +30,16 @@ class ContactSubmissionCreateView(generics.CreateAPIView):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-# Função para o Upload de Vídeo (Nova)
 @csrf_exempt
 def api_upload_video(request):
     if request.method == 'POST':
         try:
-            video = request.FILES.get('video_file') or request.FILES.get('video')
-            titulo = request.POST.get('titulo', 'Vídeo sem título')
-
+            video = request.FILES.get('video_file')
+            titulo = request.POST.get('titulo', 'Sem título')
             if video:
                 novo = VideoConteudo.objects.create(titulo=titulo, video_file=video)
                 return JsonResponse({'status': 'sucesso', 'url': novo.video_file.url}, status=201)
-            
-            return JsonResponse({'status': 'erro', 'message': 'Nenhum arquivo enviado'}, status=400)
+            return JsonResponse({'status': 'erro', 'message': 'Nenhum arquivo'}, status=400)
         except Exception as e:
             return JsonResponse({'status': 'erro', 'message': str(e)}, status=500)
-    
-    return JsonResponse({'status': 'erro', 'message': 'Metodo nao permitido'}, status=405)
+    return JsonResponse({'status': 'erro'}, status=405)
