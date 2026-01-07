@@ -103,9 +103,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     'https://clinicaarquepsi.com.br',
     'https://www.clinicaarquepsi.com.br',
+    'https://front-end-iota-ebon.vercel.app',
 ]
-
-#CORS_URLS_REGEX = r'^/api/.*$'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
