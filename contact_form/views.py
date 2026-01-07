@@ -20,10 +20,7 @@ class ContactSubmissionCreateView(generics.CreateAPIView):
         instance = serializer.save()
         
         subject = f"Nova Solicitação de Contato: {instance.name}"
-        message_body = (
-            f"Nome: {instance.name}\nEmail: {instance.email}\n"
-            f"Telefone: {instance.phone}\nMensagem: {instance.message}"
-        )
+        message_body = f"Nome: {instance.name}\nEmail: {instance.email}\nTelefone: {instance.phone}\nMensagem: {instance.message}"
         
         try:
             send_mail(subject, message_body, settings.DEFAULT_FROM_EMAIL, ['clinicaarque.psi@gmail.com'])
@@ -36,7 +33,6 @@ class ContactSubmissionCreateView(generics.CreateAPIView):
 def api_upload_video(request):
     if request.method == 'POST':
         try:
-            # O JS envia 'video_file', garantimos que o Django pegue o nome correto
             video = request.FILES.get('video_file') or request.FILES.get('video')
             titulo = request.POST.get('titulo', 'Vídeo sem título')
 
