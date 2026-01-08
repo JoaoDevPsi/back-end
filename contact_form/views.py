@@ -34,13 +34,20 @@ def api_upload_video(request):
     if request.method == 'GET':
         try:
             videos = VideoConteudo.objects.all().order_by('-criado_em')
-            data = [
-                {
-                    "id": v.id,
-                    "titulo": v.titulo,
-                    "video_file": v.video_file.url.replace("http://", "https://") + ".mp4" if v.video_file else ""
-                } for v in videos
-            ]
+            data = []
+            for v in videos:
+                if v.video_file:
+                    url = v.video_file.url
+                    url = url.replace("http://", "https://")
+                    
+                    if not url.endswith(".mp4"):
+                        url += ".mp4"
+                    
+                    data.append({
+                        "id": v.id,
+                        "titulo": v.titulo,
+                        "video_file": url
+                    })
             return JsonResponse(data, safe=False)
         except Exception as e:
             return JsonResponse({'status': 'erro', 'message': str(e)}, status=500)
