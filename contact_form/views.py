@@ -40,6 +40,9 @@ def api_upload_video(request):
                     url = v.video_file.url
                     url = url.replace("http://", "https://")
                     
+                    if "/upload/" in url:
+                        url = url.replace("/upload/", "/upload/f_mp4,vc_h264,q_auto/")
+                    
                     if not url.endswith(".mp4"):
                         url += ".mp4"
                     
