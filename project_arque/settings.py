@@ -8,7 +8,7 @@ SECRET_KEY = 'django-insecure-3-6yj3j$8)wiamuwd-f^2wjk0i&v0+6o3p8!pzlam98i7#a=8^
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'api.clinicaarquepsi.com.br', 'joaodevpsi.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'api.clinicaarquepsi.com.br', 'joaodevpsi.pythonanywhere.com', 'www.clinicaarquepsi.com.br', '.clinicaarquepsi.com.br']
 
 INSTALLED_APPS = [
     'cloudinary_storage',
@@ -62,7 +62,7 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': 'teeS67FvAVhRz_4easCOMAz4QEM'
 }
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.VideoMediaCloudinaryStorage'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 DATABASES = {
     'default': {
@@ -90,6 +90,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+CORS_REPLACE_HTTPS_REFERER = True
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

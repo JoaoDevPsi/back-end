@@ -38,7 +38,7 @@ def api_upload_video(request):
                 {
                     "id": v.id,
                     "titulo": v.titulo,
-                    "video_file": v.video_file.url.replace("http://", "https://") if v.video_file else ""
+                    "video_file": v.video_file.url.replace("http://", "https://") + ".mp4" if v.video_file else ""
                 } for v in videos
             ]
             return JsonResponse(data, safe=False)
